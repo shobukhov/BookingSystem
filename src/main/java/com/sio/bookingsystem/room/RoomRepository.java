@@ -7,4 +7,5 @@ public interface RoomRepository {
     List<Room> findAll();
     Optional<Room> findById(long id);
     Room save(Room room);
+    boolean deleteById(long id);
 }

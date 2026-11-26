@@ -38,5 +38,10 @@ public class InMemoryRoomRepository implements RoomRepository {
         rooms.put(id, saved);
         return saved;
     }
+
+    @Override
+    public boolean deleteById(long id) {
+        return rooms.remove(id) != null;
+    }
 }
 
