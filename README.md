@@ -2,7 +2,7 @@
 
 Backend-приложение для бронирования переговорных комнат на Java и Spring Boot.
 
-A room booking backend application built with Java and Spring Boot, featuring a layered architecture, REST API, dependency injection, and request validation.
+A room booking backend application built with Java and Spring Boot, featuring a layered architecture, REST API, CRUD operations, request validation, and global exception handling.
 
 ## Технологии
 
@@ -15,6 +15,10 @@ A room booking backend application built with Java and Spring Boot, featuring a 
 
 ## Функциональность
 
+- Полный CRUD для переговорных комнат.
+- Проверка уникальности названий комнат.
+- Централизованная обработка исключений через `@RestControllerAdvice`.
+- Формирование ответов об ошибках с использованием `ProblemDetail.
 - Получение списка переговорных комнат.
 - Получение комнаты по идентификатору.
 - Создание новых комнат.
@@ -38,8 +42,10 @@ A room booking backend application built with Java and Spring Boot, featuring a 
 | `GET` | `/api/rooms` | Получение всех комнат |
 | `GET` | `/api/rooms/{id}` | Получение комнаты по ID |
 | `POST` | `/api/rooms` | Создание комнаты |
+| `PUT` | `/api/rooms/{id}` | Обновление комнаты |
+| `DELETE` | `/api/rooms/{id}` | Удаление комнаты |
 
-Пример создания комнаты:
+Пример создания или обновления комнаты:
 
 ```json
 {
@@ -47,6 +53,17 @@ A room booking backend application built with Java and Spring Boot, featuring a 
     "capacity": 6
 }
 ```
+
+### HTTP-статусы
+
+| Код | Описание |
+| --- | --- |
+| `200 OK` | Успешное получение или обновление комнаты |
+| `201 Created` | Комната создана |
+| `204 No Content` | Комната удалена |
+| `400 Bad Request` | Некорректные входные данные |
+| `404 Not Found` | Комната не найдена |
+| `409 Conflict` | Комната с таким названием уже существует |
 
 Данные хранятся в памяти и сбрасываются при перезапуске приложения.
 
