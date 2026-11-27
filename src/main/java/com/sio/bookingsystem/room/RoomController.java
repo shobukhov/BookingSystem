@@ -1,6 +1,6 @@
 package com.sio.bookingsystem.room;
 
-import com.sio.bookingsystem.room.dto.CreateRoomRequest;
+import com.sio.bookingsystem.room.dto.RoomRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +28,7 @@ public class RoomController {
             @PathVariable("id")
             long id
     ) {
-        return service.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
+        return service.findById(id);
     }
 
     @PostMapping
@@ -37,33 +36,30 @@ public class RoomController {
     public Room create(
             @Valid
             @RequestBody
-            CreateRoomRequest request
+            RoomRequest request
     ) {
         return service.create(request.name(), request.capacity());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Room> update(
+    @ResponseStatus(HttpStatus.OK)
+    public Room update(
             @PathVariable("id")
             long id,
 
             @Valid
             @RequestBody
-            CreateRoomRequest request
+            RoomRequest request
     ) {
-        return service.update(id, request.name(), request.capacity())
-                .map(room -> ResponseEntity.ok(room))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return service.update(id, request.name(), request.capacity());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(
             @PathVariable("id")
             long id
     ) {
-        if (service.delete(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        service.delete(id);
     }
 }

@@ -32,6 +32,11 @@ public class InMemoryRoomRepository implements RoomRepository {
     }
 
     @Override
+    public boolean existsByName(String name) {
+        return rooms.values().stream().anyMatch(room -> room.name().equals(name));
+    }
+
+    @Override
     public Room save(Room room) {
         long id = (room.id() == null) ? nextId.incrementAndGet() : room.id();
         Room saved = new Room(id, room.name(), room.capacity());

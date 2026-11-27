@@ -1,8 +1,9 @@
 package com.sio.bookingsystem.room;
+import com.sio.bookingsystem.room.exceptions.RoomAlreadyExistsException;
+import com.sio.bookingsystem.room.exceptions.RoomNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RoomService {
@@ -16,21 +17,28 @@ public class RoomService {
         return repository.findAll();
     }
 
-    public Optional<Room> findById(long id) {
-        return repository.findById(id);
+    public Room findById(long id) {
+        return repository.findById(id).orElseThrow( () -> new RoomNotFoundException(id));
     }
 
     public Room create(String name, int capacity) {
-        Room newRoom = new Room(null, name.strip(), capacity);
-        return repository.save(newRoom);
+        if (repository.existsByName(name.strip())) {
+            throw new RoomAlreadyExistsException(name);
+        }
+        return repository.save(new Room(null, name.strip(), capacity));
     }
 
-    public Optional<Room> update(long id, String name, int capacity) {
-        return repository.findById(id)
-                .map(room -> repository.save(new Room(id, name.strip(), capacity)));
+    public Room update(long id, String name, int capacity) {
+        Room room = findById(id);
+        if (!room.name().equals(name.strip()) && repository.existsByName(name.strip())) {
+            throw new RoomAlreadyExistsException(name.strip());
+        }
+        return repository.save(new Room(id, name.strip(), capacity));
     }
 
-    public boolean delete(long id) {
-        return repository.deleteById(id);
+    public void delete(long id) {
+        if (!repository.deleteById(id)) {
+            throw new RoomNotFoundException(id);
+        }
     }
 }
